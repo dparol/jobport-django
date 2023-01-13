@@ -56,6 +56,7 @@ class Account(AbstractBaseUser):
     is_staff =models.BooleanField(default=False)
     is_active =models.BooleanField(default=False)
     is_superadmin =models.BooleanField(default=False)
+    is_recruiter =models.BooleanField(default=False)
 
 
 
@@ -72,9 +73,13 @@ class Account(AbstractBaseUser):
     def  has_perm(self,perm,obj=None):
         return self.is_admin
 
+
     def has_module_perms(self, add_label):
         return True
 
+    def get_all_permissions(user):
+        if user.is_superadmin:
+            return set()
 
 
 class UserProfile(models.Model):
@@ -112,4 +117,26 @@ class UserProfile(models.Model):
 
     def full_address(self):
         return f'{self.address_line_1}{self.address_line_2}'
+
+
+
+class RecruiterProfile(models.Model):
+    user = models.ForeignKey("Account",on_delete=models.CASCADE)
+    company_name=models.CharField(max_length=500)
+    designation=models.CharField(max_length=200)
+    company_mail=models.EmailField()
+    documents=models.FileField(null=True)
+    company_GST=models.CharField(max_length=100)
+    location=models.CharField(max_length=100)
+    is_approved=models.BooleanField(default=False)
+    is_pending=models.BooleanField(default=True)
+    is_rejected=models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.company_name
+
+
+# class userResume(models.Model):
+#     user = models.ForeignKey("Account",related_name='userresume',on_delete=models.CASCADE)
+#     resume=models.FileField(null=True)
 

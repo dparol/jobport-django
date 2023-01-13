@@ -1,11 +1,13 @@
 from rest_framework import serializers
-from ..models import UserProfile,Account
+from ..models import UserProfile,Account,RecruiterProfile
+
  
  
 class UserProfileserializer(serializers.ModelSerializer):
+
     class Meta:
        model = Account
-       fields =['username','email','phone_number','password']
+       fields =['username','email','phone_number','password','is_recruiter']
 
     def create(self,validated_data):
         password=validated_data.pop('password')
@@ -13,3 +15,11 @@ class UserProfileserializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+class RecruiterProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= RecruiterProfile
+        fields=['user','company_name','designation','location','company_GST','company_mail','is_approved','is_pending','is_rejected']
+        
+    
+            

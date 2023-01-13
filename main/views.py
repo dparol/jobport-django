@@ -4,17 +4,22 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view, APIView, permission_classes
 
+from django.contrib.auth.hashers import make_password
+
 from rest_framework import status
 from rest_framework.status import HTTP_204_NO_CONTENT
 from .models import UserProfile
-from .api.serializers import UserProfileserializer
+from .api.serializers import UserProfileserializer,RecruiterProfileSerializer
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Account
 from django.contrib import messages,auth
 from django.shortcuts import redirect, render,get_object_or_404
 
 
+from .models import RecruiterProfile
 
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
 from django.contrib.sites.shortcuts import get_current_site
@@ -68,10 +73,12 @@ class register(CreateAPIView):
 
 
 class activate(APIView):
-    def post(self,request):
-        uidb64=request.data['uidb64']
-        token=request.data['token']
-
+    
+    def post(self,request,uid,token):
+        uidb64=uid
+        token=token
+        print(uidb64)
+        print(token)
 
         try:
             uid=urlsafe_base64_decode(uidb64).decode()
@@ -87,3 +94,125 @@ class activate(APIView):
         else:
             messages.error(request,'invalid activation link')
             return Response("verification faild",status=status.HTTP_400_BAD_REQUEST)
+
+
+        
+
+class company_reg(CreateAPIView):
+    print("hi register")
+    serializer_class=RecruiterProfileSerializer
+    def post(self,request,**args):
+        try:
+        
+            user =request.user
+            print(user)
+            company_name=request.data["company_name"]
+            designation=request.data["designation"]
+            company_mail=request.data["company_mail"]
+            documents=request.data["documents"]
+            company_GST=request.data["company_GST"]
+            location=request.data["location"]
+            company=RecruiterProfile.objects.create(
+                user=user,
+                company_name=company_name,
+                designation=designation,
+                company_mail=company_mail,
+                documents=documents,
+                company_GST=company_GST,
+                location=location,
+                
+                )
+
+            company.save()
+            print(request.data)
+            serializer=RecruiterProfileSerializer(company,many=False)
+            
+        
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+         
+            return Response("verification faild",status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+
+def AllCompanyProfile(request):
+    allcompany=RecruiterProfile.objects.filter(is_pending=True)
+    
+    serializer=RecruiterProfileSerializer(allcompany,many=True)
+    
+    return Response(serializer.data)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+
+def Accept_Company(request):
+    data=request.data
+    email=request.data['email']
+   
+    allcompany=RecruiterProfile.objects.get(company_mail=email)
+    allcompany.is_approved=True
+    allcompany.is_pending=False
+    allcompany.save()
+    serializer=RecruiterProfileSerializer(allcompany)
+    print(serializer.data)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+
+def Reject_Company(request):
+    data=request.data
+    email=request.data['email']
+    print(email)
+    allcompany=RecruiterProfile.objects.get(company_mail=email)
+    allcompany.is_approved=False
+    allcompany.is_pending=False
+    allcompany.is_rejected=True
+    allcompany.save()
+    serializer=RecruiterProfileSerializer(allcompany)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+
+def AcceptedCompanies(request):
+    allcompany=RecruiterProfile.objects.filter(is_approved=True)
+    
+    serializer=RecruiterProfileSerializer(allcompany,many=True)
+    print(serializer.data)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def currentuser(request):
+    user=UserProfileserializer(request.user)
+    return Response(user.data)
+
+# @api_view(['PUT'])
+# @permission_classes([IsAuthenticated])
+# def updateUser(request):
+#     user=request.user
+#     print(user.first_name)
+#     data=request.data
+#     user.first_name=data['first_name']
+#     user.last_name=data['last_name']
+#     user.username=data['username']
+#     user.email=data['email']
+#     user.phone_number=data['phone_number']
+#     if data['password'] != '':
+#         user.password =make_password(data['password'])
+
+#     user.save()
+#     serializer=UserProfileserializer(user)
+#     return Response(serializer.data)
