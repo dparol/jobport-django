@@ -4,7 +4,7 @@ from pathlib import Path
 import datetime
 from datetime import timedelta
 import os
-# from decouple import config
+from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -15,12 +15,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*p0u81ma+83@=(jfn5t0_$i-+0w4xt6i@e71tdvlllc)7s0(tl'
+# SECRET_KEY = 'django-insecure-*p0u81ma+83@=(jfn5t0_$i-+0w4xt6i@e71tdvlllc)7s0(tl'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -56,7 +57,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=90 ),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -176,11 +177,11 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL='main.Account'   
 
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER ="wirelezbrain01@gmail.com"
-EMAIL_HOST_PASSWORD ="mzhw mfbi aoyv qpuz"
-EMAIL_USE_TLS = True
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_HOST_USER =config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD =config("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS")
 
 
 # Default primary key field type
