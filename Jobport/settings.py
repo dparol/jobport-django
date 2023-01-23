@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-*p0u81ma+83@=(jfn5t0_$i-+0w4xt6i@e71tdvlllc)7s0(tl'
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = "django-insecure-*p0u81ma+83@=(jfn5t0_$i-+0w4xt6i@e71tdvlllc)7s0(tl"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =True
@@ -177,11 +177,11 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL='main.Account'   
 
 
-EMAIL_HOST = config("EMAIL_HOST")
-EMAIL_PORT = config("EMAIL_PORT")
-EMAIL_HOST_USER =config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD =config("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = config("EMAIL_USE_TLS")
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER ="wirelezbrain01@gmail.com"
+EMAIL_HOST_PASSWORD ="mzhw mfbi aoyv qpuz"
+EMAIL_USE_TLS = True
 
 
 # Default primary key field type
@@ -197,3 +197,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:3000"
 ]
+
+
