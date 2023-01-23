@@ -14,6 +14,9 @@ urlpatterns = [
     path('company/reject/',views.Reject_Company,name='Reject_Company'),
     path('company/approved/',views.AcceptedCompanies,name='approved'),
     path('currentuser/',views.currentuser,name="currentuser"),
+    path('get/allrecruiters/',views.getAllrecruiters,name="getAllrecruiters"),
+    path('get/allcandidate/',views.getallCandidate,name='getallCandidate'),
+    path('get/totaljobs/',views.totalJobs,name='totalJobs')
     
 
  ]

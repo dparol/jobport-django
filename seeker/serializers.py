@@ -11,6 +11,7 @@ class CandidateSerializer(serializers.ModelSerializer):
     class Meta:
         model = candidateApplied
         fields = '__all__'
+
         
 
 

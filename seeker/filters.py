@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from .models import Jobapplication as Job
+from recruiter.models import Jobapplication as Job
 
 
 class jobfilter(filters.FilterSet):

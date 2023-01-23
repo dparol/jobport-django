@@ -9,7 +9,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from rest_framework.status import HTTP_204_NO_CONTENT
 from .models import UserProfile
-from .api.serializers import UserProfileserializer,RecruiterProfileSerializer
+from .api.serializers import UserProfileserializer,RecruiterProfileSerializer,RecruiterdetailsSerializer
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Account
@@ -32,6 +32,9 @@ from django.core.mail import EmailMessage
 
 from rest_framework.decorators import api_view
 
+
+from recruiter.models import Jobapplication
+from recruiter.serializers import Jobserializer
 # Create your views here.
 class register(CreateAPIView):
     serializer_class=UserProfileserializer
@@ -59,14 +62,7 @@ class register(CreateAPIView):
             send_email=EmailMessage(mail_subject,message,to=[to_email])
             send_email.send()
 
-
-
             return Response(serializer.data,status=status.HTTP_201_CREATED)
-
-            
-
-
-
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
@@ -101,33 +97,14 @@ class activate(APIView):
 class company_reg(CreateAPIView):
     print("hi register")
     serializer_class=RecruiterProfileSerializer
-    def post(self,request,**args):
-        try:
-        
-            user =request.user
-            print(user)
-            company_name=request.data["company_name"]
-            designation=request.data["designation"]
-            company_mail=request.data["company_mail"]
-            documents=request.data["documents"]
-            company_GST=request.data["company_GST"]
-            location=request.data["location"]
-            company=RecruiterProfile.objects.create(
-                user=user,
-                company_name=company_name,
-                designation=designation,
-                company_mail=company_mail,
-                documents=documents,
-                company_GST=company_GST,
-                location=location,
-                
-                )
+    def post(self,request):
+        data=request.data
 
-            company.save()
-            print(request.data)
-            serializer=RecruiterProfileSerializer(company,many=False)
-            
-        
+        try:
+            user =request.user
+            new_company=RecruiterProfile.objects.create(user=user,**data)
+            serializer=RecruiterProfileSerializer(new_company,many=False)
+
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         except Exception as e:
             print(e)
@@ -198,6 +175,31 @@ def AcceptedCompanies(request):
 def currentuser(request):
     user=UserProfileserializer(request.user)
     return Response(user.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getAllrecruiters(request):
+    allrecruiters=Account.objects.filter(is_recruiter=True)
+    serializer =RecruiterdetailsSerializer(allrecruiters,many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getallCandidate(request):
+    allcandidates =Account.objects.filter(is_recruiter=False)
+    serializer = RecruiterdetailsSerializer(allcandidates,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def totalJobs(request):
+    allJobs = Jobapplication.objects.all()
+    serializer =Jobserializer(allJobs,many=True)
+    return Response(serializer.data)
+    
+
 
 # @api_view(['PUT'])
 # @permission_classes([IsAuthenticated])

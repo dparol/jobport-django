@@ -23,7 +23,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['username'] = user.username
         token['email'] = user.email
-
+        token['is_recruiter']=user.is_recruiter
         token['is_superadmin']=user.is_superadmin
         token['is_staff']=user.is_staff
 
@@ -47,12 +47,6 @@ def getRoutes(request):
 
 
 
-# @api_view(['GET'])
-# def adminuser(request,id):
-
-#     user=request.get(pk=id)
-#     admin=user.objects.get(is_superadmin=True)
-#     try:
 
 
 
