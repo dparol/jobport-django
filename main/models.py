@@ -112,8 +112,8 @@ class UserProfile(models.Model):
     CurrentLocation=models.CharField(blank=True, max_length=50)
     PreferredLocations=models.CharField(blank=True, max_length=50)#array
 
-    def __str__(self):
-        return self.user.first_name
+    # def __str__(self):
+    #     return self.user.user
 
     def full_address(self):
         return f'{self.address_line_1}{self.address_line_2}'
