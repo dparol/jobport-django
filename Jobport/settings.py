@@ -132,8 +132,8 @@ WSGI_APPLICATION = 'Jobport.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'jobportal',
-       'USER': 'postgres',
+       'NAME': 'jobstart',
+       'USER': 'parol',
        'PASSWORD': 'qwedfgbnm',
        'HOST': 'localhost',
        'PORT': '5432',
